@@ -44,23 +44,31 @@
     </div>
 
     <header class="site-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <img src="logo.png" alt="FTF HUB" class="site-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-            <div class="site-title" style="display:none;">FTF HUB</div> 
+        <div class="header-left">
+            <img src="logo.png" alt="FTF HUB" class="site-logo">
+            <nav class="nav-links">
+                <button onclick="nav('trades')" class="nav-link active" id="nav-trades">Trade Ads</button>
+                <button onclick="nav('calculator')" class="nav-link" id="nav-calculator">Calculator</button>
+                <button onclick="nav('values')" class="nav-link" id="nav-values">Values</button>
+            </nav>
         </div>
         
-        <nav class="nav-links">
-            <button onclick="nav('trades')" class="nav-link active" id="nav-trades">Trade Ads</button>
-            <button onclick="nav('calculator')" class="nav-link" id="nav-calculator">Calculator</button>
-            <button onclick="nav('values')" class="nav-link" id="nav-values">Values</button>
-        </nav>
-        
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div id="user-info" style="display:none; align-items:center; gap:10px;">
-                <span id="header-username" style="font-size:14px; font-weight:bold;">Guest</span>
-                <button onclick="logout()" style="background:none; border:1px solid #333; color:#888; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:12px;">Logout</button>
+        <div class="header-right">
+            <a href="https://discord.gg/nh2mTzMwFx" target="_blank" class="icon-link discord-icon" title="Join Discord Server">
+                <i class="fab fa-discord"></i>
+            </a>
+
+            <button id="theme-toggle" class="icon-btn" title="Toggle Light/Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+
+            <div id="user-info" style="display:none;">
+                <img id="header-avatar" src="" alt="Avatar" class="user-avatar">
+                <span id="header-username">Guest</span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
             </div>
-            <button id="login-btn" onclick="openAuth()" style="background:#22c55e; border:none; color:black; padding:8px 16px; border-radius:5px; cursor:pointer; font-weight:bold;">Login</button>
+
+            <button id="login-btn" onclick="openAuth()" class="login-btn">Login</button>
         </div>
     </header>
 
