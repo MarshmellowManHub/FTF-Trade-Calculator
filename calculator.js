@@ -1,8 +1,11 @@
+// calculator.js
 let allItems = [];
 let yourItems = [];
 let theirItems = [];
 let activeSide = 'your';
 let modeHV = false;
+// New state for modal filtering
+let currentModalFilter = 'all';
 const HV_DIVISOR = 40;
 
 // Elements
@@ -17,6 +20,9 @@ const modalSearch = document.getElementById('modal-search');
 
 export async function initCalculator() {
     try {
+        // Using the file data directly from app.js if loaded there, otherwise fetch.
+        // Assuming app.js loads it first and makes it available or we fetch again.
+        // For simplicity here, fetching again to ensure standalone functionality.
         const res = await fetch('ftf_items.json');
         const data = await res.json();
         allItems = data.items;
@@ -131,39 +137,58 @@ function setupListeners() {
         }
     };
 
-    modalSearch.addEventListener('input', (e) => renderModalList(e.target.value));
+    // Search listener updates the list based on current search text
+    modalSearch.addEventListener('input', () => renderModalList());
+
+    // --- NEW: Sidebar Filter Listener ---
+    window.filterModal = (rarity) => {
+        currentModalFilter = rarity;
+        // Update active button visual style
+        document.querySelectorAll('.modal-filter-btn').forEach(btn => btn.classList.remove('active'));
+        const btnMap = {'all':0,'Legendary':1,'Epic':2,'Rare':3,'Common':4};
+        const sidebar = document.querySelector('.modal-sidebar');
+        if(sidebar && sidebar.children[btnMap[rarity]]) sidebar.children[btnMap[rarity]].classList.add('active');
+        
+        // Re-render list with new filter
+        renderModalList();
+    };
 }
 
 window.openModal = (side) => {
     activeSide = side;
     modalSearch.value = "";
+    // Reset filter to 'all' when opening modal
+    filterModal('all'); 
     document.getElementById('modal').style.display = 'flex';
-    renderModalList();
     modalSearch.focus();
 };
 
 window.closeModal = () => document.getElementById('modal').style.display = 'none';
 
-function renderModalList(filterText = "") {
+// Updated to handle both search and rarity filtering
+function renderModalList() {
     const list = document.getElementById('modal-list');
     list.innerHTML = '';
-    const search = filterText.toLowerCase();
+    const searchText = modalSearch.value.toLowerCase();
     
-    const filtered = allItems.filter(item => item.name.toLowerCase().includes(search));
+    const filtered = allItems.filter(item => {
+        // Filter by Search Text AND Rarity
+        const matchSearch = item.name.toLowerCase().includes(searchText);
+        const matchRarity = currentModalFilter === 'all' || item.rarity === currentModalFilter;
+        return matchSearch && matchRarity;
+    });
 
     filtered.forEach(item => {
         const div = document.createElement('div');
         div.className = 'modal-item';
+        // Added Demand Badge to HTML
         div.innerHTML = `
+            <div class="modal-demand-badge">D: ${item.demand}</div>
             <img src="items/${item.name}.png" onerror="this.src='items/Default.png'">
-            <div class="modal-item-name" style="font-size:11px;margin-top:5px;color:#ccc;">${item.name}</div>
+            <div class="modal-item-name">${item.name}</div>
         `;
         div.onclick = () => {
-            // --- FIX START ---
-            // If activeSide is ANYTHING other than the calculator sides, STOP here.
-            // This lets app.js handle "post-yours", "post-theirs", "inventory", etc.
             if (activeSide !== 'your' && activeSide !== 'their') return;
-            // --- FIX END ---
 
             const arr = activeSide === 'your' ? yourItems : theirItems;
             if(arr.length < 9) {
