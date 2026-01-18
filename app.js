@@ -265,7 +265,7 @@ async function submitAd() {
     }
 }
 
-// --- LOAD FROM FIREBASE (UPDATED LAYOUT) ---
+// --- LOAD FROM FIREBASE (UPDATED WITH STABILITY ICONS) ---
 async function loadTradeFeed() {
     tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
     
@@ -305,13 +305,17 @@ async function loadTradeFeed() {
                 }, 0);
             }
 
-            // HTML Generator for items
+            // HTML Generator for items (NOW WITH STABILITY ICONS)
             const renderSide = (items) => {
                 return `<div class="trade-grid-small">` + items.map(i => {
                     const d = allItemsData.find(x => x.name === i.name) || { value:0, demand:0, stability:'Stable' };
-                    let icon = '<i class="fas fa-minus status-flat"></i>';
-                    if(d.stability.includes("➕")) icon = '<i class="fas fa-arrow-up status-up"></i>';
-                    else if(d.stability.includes("➖")) icon = '<i class="fas fa-arrow-down status-down"></i>';
+                    
+                    // --- STABILITY ICON LOGIC ---
+                    let icon = '<i class="fas fa-minus status-flat" title="Stable"></i>'; // Default
+                    if(d.stability.includes("➕")) icon = '<i class="fas fa-arrow-up status-up" title="Rising"></i>';
+                    else if(d.stability.includes("➖")) icon = '<i class="fas fa-arrow-down status-down" title="Lowering"></i>';
+                    else if(d.stability.includes("Fluctuating")) icon = '<i class="fas fa-wave-square" style="color:#eab308;font-size:12px;" title="Fluctuating"></i>';
+                    // ----------------------------
 
                     return `
                     <div class="mini-slot">
@@ -331,7 +335,6 @@ async function loadTradeFeed() {
 
             let timeStr = ad.displayTime || new Date(ad.timestamp).toLocaleTimeString();
 
-            // Updated Card Layout
             card.innerHTML = `
                 <div class="trade-card-header"><span>Trading</span><span>${timeStr}</span></div>
                 <div class="trade-card-body">
