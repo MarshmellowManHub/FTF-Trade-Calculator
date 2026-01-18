@@ -71,7 +71,7 @@ document.getElementById('generate-btn').addEventListener('click', async () => {
     document.getElementById('auth-loader').style.display = 'block';
     try {
         const url = `https://users.roblox.com/v1/users/search?keyword=${user}&limit=10`;
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
         const json = await res.json();
         const data = JSON.parse(json.contents);
         const target = data.data.find(u => u.name.toLowerCase() === user.toLowerCase());
@@ -88,7 +88,7 @@ document.getElementById('generate-btn').addEventListener('click', async () => {
 document.getElementById('verify-check-btn').addEventListener('click', async () => {
     try {
         const url = `https://users.roblox.com/v1/users/${robloxId}`;
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
         const json = await res.json();
         if(JSON.parse(json.contents).description.includes(generatedCode)) {
             localStorage.setItem('ftf_user', JSON.stringify(currentUser));
