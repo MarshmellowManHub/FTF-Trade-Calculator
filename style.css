@@ -246,6 +246,34 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
     border-radius: 4px;
 }
 
+/* --- TRADES FEED UPDATED --- */
+.trade-toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 30px; }
+.post-ad-btn { background: var(--accent-blue); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 16px; }
+.post-ad-btn:hover { background: #2563eb; }
+.post-ad-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+.trade-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.trade-card-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 14px; }
+.trade-card-body { display: flex; align-items: flex-start; padding: 20px; gap: 20px; } /* Changed align-items to flex-start for better header alignment */
+.trade-side { flex: 1; display: flex; flex-direction: column; gap: 10px; } /* Added flex col for stacking header/grid/total */
+.trade-divider { font-size: 24px; color: var(--text-secondary); align-self: center; margin-top: 20px; } /* Centered divider */
+.trade-grid-small { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; justify-content: center; }
+
+/* New Headers & Totals */
+.side-header { text-align: center; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.side-total { text-align: center; font-size: 15px; font-weight: 800; color: var(--accent-blue); margin-top: 5px; }
+
+/* Mini Card for Feed */
+.mini-slot { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; display: flex; flex-direction: column; align-items: center; position: relative; min-height: 90px; }
+.mini-slot img { width: 45px; height: 45px; object-fit: contain; margin-top: 12px; }
+.mini-slot .status-icon { position: absolute; top: 4px; left: 4px; font-size: 10px; }
+.mini-slot .demand-badge { position: absolute; top: 4px; right: 4px; font-size: 9px; padding: 1px 4px; }
+.mini-slot .value-badge { font-size: 10px; padding: 2px 6px; margin-top: 4px; width: 100%; }
+.mini-slot .item-name { font-size: 9px; color: #ccc; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+.generic-tag { background: #222; color: #ccc; padding: 20px 10px; border-radius: 8px; text-align: center; font-weight: 600; border: 1px dashed #444; margin-top: 5px; }
+.trade-card-footer { background: #111; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 14px; }
+
 /* Auth */
 #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .auth-box { background: var(--bg-panel); border: 1px solid #333; padding: 40px; border-radius: 12px; text-align: center; width: 400px; }
