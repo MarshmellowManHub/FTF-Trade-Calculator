@@ -1,0 +1,185 @@
+:root {
+    --bg-main: #050505;
+    --bg-panel: #0a0a0a;
+    --border-color: #222;
+    --slot-bg: #111;
+    --text-primary: #fff;
+    --text-secondary: #888;
+    --accent-blue: #3b82f6;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-main); color: var(--text-primary);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+}
+
+/* --- Header & Nav --- */
+.site-header {
+    background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color);
+    padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+}
+
+/* Logo Image Style */
+.site-logo {
+    height: 40px; /* Adjust height as needed */
+    width: auto;
+    display: block;
+}
+
+.nav-links { display: flex; gap: 20px; }
+.nav-link { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 15px; transition: 0.2s; }
+.nav-link.active, .nav-link:hover { color: var(--text-primary); font-weight: 700; }
+
+main { max-width: 1200px; margin: 40px auto; width: 95%; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* --- CALCULATOR --- */
+.calculator-container { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.calc-header { display: grid; grid-template-columns: 100px 1fr 100px; align-items: center; margin-bottom: 10px; }
+.total-display { font-size: 32px; font-weight: 800; white-space: nowrap; }
+.wfl-container { display: flex; flex-direction: column; align-items: center; padding: 0 20px; }
+.wfl-labels { display: flex; gap: 15px; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+.progress-track { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; width: 50%; background: #444; transition: width 0.4s; }
+
+.calc-body { display: flex; justify-content: space-between; margin-top: 30px; }
+.side-panel { width: 350px; }
+.panel-label { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
+.grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+
+/* Grid Slot */
+.slot { 
+    aspect-ratio: 1/1; 
+    background-color: var(--slot-bg); 
+    border: 1px solid #222; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    position: relative; 
+    display: flex; /* Flex is critical for centering */
+    justify-content: center; 
+    align-items: center;
+}
+.slot:hover { border-color: #444; background-color: #1a1a1a; }
+
+/* --- IMAGE CENTERING FIX --- */
+.slot-content { 
+    width: 100%; height: 100%; 
+    display: flex; 
+    justify-content: center; /* Center Horizontally */
+    align-items: center;     /* Center Vertically */
+    padding: 5px;
+}
+.slot-img { 
+    max-width: 85%; max-height: 85%; 
+    object-fit: contain; 
+    display: block;
+    margin: auto; /* Forces center in flex container */
+}
+
+/* Controls Overlay */
+.slot-controls { 
+    position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); 
+    display: flex; background: rgba(0,0,0,0.9); border: 1px solid #444; 
+    border-radius: 20px; padding: 2px 10px; gap: 10px; z-index: 10; 
+}
+.ctrl-btn { color: white; font-weight: 900; background: none; border: none; cursor: pointer; width: 20px; display: flex; justify-content: center; }
+.ctrl-qty { font-size: 13px; font-weight: 700; color: #ddd; min-width: 15px; text-align: center; }
+
+.center-status { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.result-value { font-size: 42px; font-weight: 900; }
+.result-label { font-size: 24px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
+.reset-btn { background: #222; color: #ccc; border: none; padding: 8px 24px; border-radius: 6px; cursor: pointer; }
+
+.calc-footer { display: flex; justify-content: flex-end; align-items: center; margin-top: 20px; gap: 10px; }
+.mode-switch { background: #151515; border: 1px solid #333; border-radius: 20px; display: flex; padding: 2px; cursor: pointer; }
+.mode-switch.small { transform: scale(0.9); }
+.mode-opt { padding: 4px 16px; border-radius: 16px; color: #666; transition: 0.2s; font-size: 13px; font-weight: 700; }
+.mode-opt.active { background: #333; color: white; }
+
+/* --- TRADES FEED --- */
+.trade-toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 30px; }
+.post-ad-btn { background: var(--accent-blue); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 16px; }
+.post-ad-btn:hover { background: #2563eb; }
+.post-ad-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+.trade-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.trade-card-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 14px; }
+.trade-card-body { display: flex; align-items: center; padding: 20px; gap: 20px; }
+.trade-side { flex: 1; }
+.trade-divider { font-size: 24px; color: var(--text-secondary); }
+.trade-grid-small { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+/* Mini Card for Feed */
+.mini-slot { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; display: flex; flex-direction: column; align-items: center; position: relative; min-height: 90px; }
+.mini-slot img { width: 45px; height: 45px; object-fit: contain; margin-top: 12px; }
+.mini-slot .status-icon { position: absolute; top: 4px; left: 4px; font-size: 10px; }
+.mini-slot .demand-badge { position: absolute; top: 4px; right: 4px; font-size: 9px; padding: 1px 4px; }
+.mini-slot .value-badge { font-size: 10px; padding: 2px 6px; margin-top: 4px; width: 100%; }
+.mini-slot .item-name { font-size: 9px; color: #ccc; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+.generic-tag { background: #222; color: #ccc; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; border: 1px dashed #444; }
+.trade-card-footer { background: #111; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 14px; }
+
+/* --- VALUES PAGE --- */
+.full-height-container { height: 80vh; display: flex; flex-direction: column; padding: 0; }
+.values-toolbar { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); border-radius: 20px 20px 0 0; }
+.search-bar { background: #111; border: 1px solid #333; padding: 10px 15px; border-radius: 8px; color: white; width: 300px; }
+.controls-right { display: flex; gap: 15px; align-items: center; }
+.sort-select { background: #111; border: 1px solid #333; color: #ccc; padding: 8px 12px; border-radius: 8px; cursor: pointer; outline: none; }
+
+.values-content { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 200px; padding: 20px; border-right: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; gap: 5px; }
+.filter-btn { background: transparent; border: 1px solid transparent; color: var(--text-secondary); padding: 10px; text-align: left; cursor: pointer; border-radius: 6px; font-weight: 600; }
+.filter-btn:hover { background: #1a1a1a; color: white; }
+.filter-btn.active { background: #222; color: white; border: 1px solid #333; }
+
+.values-grid { flex: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; align-content: start; background: var(--bg-main); }
+
+.value-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative; transition: 0.2s; }
+.value-card:hover { border-color: #555; transform: translateY(-2px); }
+.status-icon { position: absolute; top: 8px; left: 8px; font-size: 14px; }
+.status-up { color: var(--accent-green); }
+.status-down { color: var(--accent-red); }
+.status-flat { color: #444; }
+.demand-badge { position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 700; color: #888; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; }
+.value-badge { background: #1a1a1a; color: var(--accent-green); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 800; margin-top: 8px; border: 1px solid #333; width: 100%; text-align: center; }
+
+/* --- MODALS --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
+
+/* Post Ad Modal */
+#post-ad-modal { z-index: 2500; }
+.post-modal-box { background: var(--bg-panel); width: 700px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column; max-height: 90vh; }
+.post-modal-body { padding: 20px; overflow-y: auto; }
+.post-section { margin-bottom: 25px; }
+.grid-2x2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 200px; }
+.tag-toggles { display: flex; gap: 10px; margin-bottom: 15px; }
+.tag-btn { background: #222; border: 1px solid #333; color: #888; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; flex: 1; }
+.tag-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+.discord-input { width: 100%; background: #111; border: 1px solid #333; padding: 12px; border-radius: 8px; color: white; outline: none; }
+.submit-ad-btn { width: 100%; background: var(--accent-blue); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 18px; }
+.draft-total { font-size: 14px; font-weight: 700; color: var(--accent-green); margin-top: 5px; text-align: right; display: block; }
+
+/* Item Select Modal */
+#modal { z-index: 3000; } 
+.modal-box { background: var(--bg-panel); width: 800px; height: 600px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column; overflow: hidden; }
+.modal-header { padding: 20px; border-bottom: 1px solid #222; display: flex; flex-direction: column; gap: 15px; width: 100%; }
+.modal-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.modal-search { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; padding: 12px 15px; border-radius: 8px; color: white; font-size: 16px; outline: none; transition: 0.2s; }
+.modal-search:focus { border-color: #555; background: #151515; }
+.modal-grid { padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
+.modal-item { background: var(--slot-bg); padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #222; }
+.modal-item:hover { border-color: #555; }
+.modal-item img { width: 50px; height: 50px; object-fit: contain; }
+
+/* Auth */
+#auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+.auth-box { background: var(--bg-panel); border: 1px solid #333; padding: 40px; border-radius: 12px; text-align: center; width: 400px; }
+.action-btn { background: white; color: black; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-size: 1rem; margin-top: 20px; font-weight: bold; }
+.phrase-box { background: black; padding: 15px; border: 1px dashed #444; color: #22c55e; margin: 20px 0; font-family: monospace; font-size: 18px; }

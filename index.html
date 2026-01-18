@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTF Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-box" id="step-1">
+            <h2>Welcome to FTF Hub</h2>
+            <p>Enter your Roblox username to begin.</p>
+            <input type="text" id="roblox-username" placeholder="Roblox Username..." style="width:100%; padding:12px; margin-top:15px; border-radius:8px; border:1px solid #333; background:#111; color:white;">
+            <br><br>
+            <button class="action-btn" id="generate-btn">Continue</button>
+            <button onclick="closeAuth()" style="margin-top:10px; background:none; border:none; color:#666; cursor:pointer;">Cancel</button>
+        </div>
+        <div class="auth-box" id="step-2" style="display:none;">
+            <h2>Verification</h2>
+            <p>Please paste the following code into your <strong>Roblox About Me</strong> section:</p>
+            <div class="phrase-box" id="verification-phrase">LOADING...</div>
+            <button class="action-btn" id="verify-check-btn">I've Updated My Bio</button>
+            <p id="auth-error" style="color: #ef4444; margin-top: 15px; font-weight:bold;"></p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="ftf-logo.png" alt="FTF HUB" class="site-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+            <div class="site-title" style="display:none;">FTF HUB</div> 
+        </div>
+        
+        <nav class="nav-links">
+            <button onclick="nav('trades')" class="nav-link active" id="nav-trades">Trade Ads</button>
+            <button onclick="nav('calculator')" class="nav-link" id="nav-calculator">Calculator</button>
+            <button onclick="nav('values')" class="nav-link" id="nav-values">Values</button>
+        </nav>
+        
+        <div style="display:flex; align-items:center; gap:15px;">
+            <div id="user-info" style="display:none; align-items:center; gap:10px;">
+                <span id="header-username" style="font-size:14px; font-weight:bold;">Guest</span>
+                <button onclick="logout()" style="background:none; border:1px solid #333; color:#888; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:12px;">Logout</button>
+            </div>
+            <button id="login-btn" onclick="openAuth()" style="background:#22c55e; border:none; color:black; padding:8px 16px; border-radius:5px; cursor:pointer; font-weight:bold;">Login</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="trades" class="section active">
+            <div class="trade-toolbar">
+                <div>
+                    <h2 style="margin:0;">Recent Trade Ads</h2>
+                    <span id="ads-left-msg" style="color:#888; font-size:14px; display:none;">Ads left today: 4</span>
+                </div>
+                <button id="open-post-ad-btn" class="post-ad-btn">
+                    <i class="fas fa-plus"></i> Post Ad
+                </button>
+            </div>
+            <div id="trade-feed"></div>
+        </section>
+
+        <section id="calculator" class="section">
+            <div class="calculator-container">
+                <div class="calc-header">
+                    <div class="total-display" id="your-total">0 fv</div>
+                    <div class="wfl-container">
+                        <div class="wfl-labels"><span>Win</span><span>Fair</span><span>Lose</span></div>
+                        <div class="progress-track"><div id="wfl-bar" class="progress-fill"></div></div>
+                    </div>
+                    <div class="total-display" style="text-align:right;" id="their-total">0 fv</div>
+                </div>
+                <div class="calc-body">
+                    <div class="side-panel">
+                        <div class="panel-label">Your Offer</div>
+                        <div id="your-grid" class="grid-3x3"></div>
+                    </div>
+                    <div class="center-status">
+                        <div id="result-value" class="result-value">--</div>
+                        <div id="result-label" class="result-label"></div>
+                        <button id="reset-btn" class="reset-btn">Reset</button>
+                    </div>
+                    <div class="side-panel">
+                        <div class="panel-label">Their Offer</div>
+                        <div id="their-grid" class="grid-3x3"></div>
+                    </div>
+                </div>
+                <div class="calc-footer">
+                    <span>Mode</span>
+                    <div class="mode-switch" id="mode-switch">
+                        <div class="mode-opt active" data-mode="fv">fv</div>
+                        <div class="mode-opt" data-mode="hv">hv</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="values" class="section">
+            <div class="calculator-container full-height-container">
+                <div class="values-toolbar">
+                    <input type="text" id="values-search" class="search-bar" placeholder="Search items...">
+                    <div class="controls-right">
+                        <select id="values-sort" class="sort-select">
+                            <option value="val-high">Value: High to Low</option>
+                            <option value="val-low">Value: Low to High</option>
+                            <option value="dem-high">Demand: High to Low</option>
+                            <option value="dem-low">Demand: Low to High</option>
+                            <option value="status">Status (Rising First)</option>
+                        </select>
+                        <div class="mode-switch small" id="val-mode-switch">
+                            <div class="mode-opt active" data-mode="fv">fv</div>
+                            <div class="mode-opt" data-mode="hv">hv</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="values-content">
+                    <div class="sidebar">
+                        <button class="filter-btn active" onclick="filterValues('all')">All</button>
+                        <button class="filter-btn" onclick="filterValues('Legendary')" style="color:#ffcc00">Legendary</button>
+                        <button class="filter-btn" onclick="filterValues('Epic')" style="color:#a335ee">Epic</button>
+                        <button class="filter-btn" onclick="filterValues('Rare')" style="color:#3b82f6">Rare</button>
+                        <button class="filter-btn" onclick="filterValues('Common')" style="color:#9ca3af">Common</button>
+                    </div>
+                    <div id="values-list" class="values-grid"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-top-row">
+                    <h3>Select Item</h3>
+                    <button onclick="closeModal()" style="background:none; border:none; color:#888; font-size:28px; cursor:pointer;">&times;</button>
+                </div>
+                <input type="text" id="modal-search" class="modal-search" placeholder="Search items...">
+            </div>
+            <div id="modal-list" class="modal-grid"></div>
+        </div>
+    </div>
+
+    <div id="post-ad-modal" class="modal-overlay">
+        <div class="post-modal-box">
+            <div class="modal-header">
+                <div class="modal-top-row">
+                    <h3>Create Trade Ad</h3>
+                    <button id="close-post-modal" style="background:none; border:none; color:#888; font-size:28px; cursor:pointer;">&times;</button>
+                </div>
+            </div>
+            <div class="post-modal-body">
+                <div class="post-section">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-weight:700;">Your Side (Max 4 Items)</span>
+                        <span id="post-yours-total" class="draft-total">Total: 0 fv</span>
+                    </div>
+                    <div id="post-yours-grid" class="grid-2x2"></div>
+                </div>
+                <div class="post-section">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-weight:700;">What You Want</span>
+                        <span id="post-theirs-total" class="draft-total" style="display:none;">Total: 0 fv</span>
+                    </div>
+                    <div class="tag-toggles">
+                        <button class="tag-btn active" data-tag="specific">Specific Items</button>
+                        <button class="tag-btn" data-tag="Upgrade">Upgrade</button>
+                        <button class="tag-btn" data-tag="Downgrade">Downgrade</button>
+                        <button class="tag-btn" data-tag="Any">Any Offers</button>
+                    </div>
+                    <div id="post-theirs-grid-container">
+                         <div id="post-theirs-grid" class="grid-2x2"></div>
+                    </div>
+                </div>
+                <div class="post-section">
+                    <span style="display:block;margin-bottom:10px;font-weight:700;">Discord Handle</span>
+                    <input type="text" id="discord-input" class="discord-input" placeholder="e.g., username#1234">
+                </div>
+                <button id="submit-ad-btn" class="submit-ad-btn">Post Trade Ad</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    <script>
+        function nav(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.getElementById('nav-' + sectionId).classList.add('active');
+        }
+        function openAuth() { document.getElementById('auth-overlay').style.display = 'flex'; }
+        function closeAuth() { document.getElementById('auth-overlay').style.display = 'none'; }
+    </script>
+</body>
+</html>
