@@ -26,7 +26,7 @@ body {
 
 /* Logo Image Style */
 .site-logo {
-    height: 40px; /* Adjust height as needed */
+    height: 40px; 
     width: auto;
     display: block;
 }
@@ -61,25 +61,25 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
     border-radius: 6px; 
     cursor: pointer; 
     position: relative; 
-    display: flex; /* Flex is critical for centering */
+    display: flex; 
     justify-content: center; 
     align-items: center;
 }
 .slot:hover { border-color: #444; background-color: #1a1a1a; }
 
-/* --- IMAGE CENTERING FIX --- */
+/* Image Centering */
 .slot-content { 
     width: 100%; height: 100%; 
     display: flex; 
-    justify-content: center; /* Center Horizontally */
-    align-items: center;     /* Center Vertically */
+    justify-content: center; 
+    align-items: center;     
     padding: 5px;
 }
 .slot-img { 
     max-width: 85%; max-height: 85%; 
     object-fit: contain; 
     display: block;
-    margin: auto; /* Forces center in flex container */
+    margin: auto; 
 }
 
 /* Controls Overlay */
@@ -166,17 +166,85 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .submit-ad-btn { width: 100%; background: var(--accent-blue); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 18px; }
 .draft-total { font-size: 14px; font-weight: 700; color: var(--accent-green); margin-top: 5px; text-align: right; display: block; }
 
-/* Item Select Modal */
+/* --- NEW ITEM SELECT MODAL STYLES --- */
 #modal { z-index: 3000; } 
-.modal-box { background: var(--bg-panel); width: 800px; height: 600px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column; overflow: hidden; }
-.modal-header { padding: 20px; border-bottom: 1px solid #222; display: flex; flex-direction: column; gap: 15px; width: 100%; }
+
+/* 1. Make Modal Bigger */
+.modal-box { 
+    background: var(--bg-panel); 
+    width: 95%; max-width: 1200px; 
+    height: 90vh; 
+    border-radius: 12px; border: 1px solid #333; 
+    display: flex; flex-direction: column; overflow: hidden; 
+}
+
+.modal-header { padding: 20px; border-bottom: 1px solid #222; display: flex; flex-direction: column; gap: 15px; width: 100%; flex-shrink: 0; }
 .modal-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .modal-search { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; padding: 12px 15px; border-radius: 8px; color: white; font-size: 16px; outline: none; transition: 0.2s; }
 .modal-search:focus { border-color: #555; background: #151515; }
-.modal-grid { padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
-.modal-item { background: var(--slot-bg); padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #222; }
-.modal-item:hover { border-color: #555; }
-.modal-item img { width: 50px; height: 50px; object-fit: contain; }
+
+/* 2. New Flex Layout */
+.modal-body-flex { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar Styles */
+.modal-sidebar {
+    width: 180px;
+    background: var(--bg-panel);
+    border-right: 1px solid #333;
+    padding: 15px;
+    display: flex; flex-direction: column; gap: 8px;
+    overflow-y: auto;
+}
+
+.modal-filter-btn {
+    background: transparent; border: 1px solid transparent;
+    color: var(--text-secondary); padding: 10px; text-align: left;
+    cursor: pointer; border-radius: 8px; font-weight: 700; font-size: 14px;
+    transition: 0.2s;
+}
+.modal-filter-btn:hover { background: #1a1a1a; }
+.modal-filter-btn.active { background: #222; border-color: #333; color: white; }
+
+/* Sidebar Colors */
+.modal-filter-btn.legendary { color: #ffcc00; }
+.modal-filter-btn.epic { color: #a335ee; }
+.modal-filter-btn.rare { color: #3b82f6; }
+.modal-filter-btn.common { color: #9ca3af; }
+.modal-filter-btn.active.legendary { background: rgba(255, 204, 0, 0.1); }
+.modal-filter-btn.active.epic { background: rgba(163, 53, 238, 0.1); }
+.modal-filter-btn.active.rare { background: rgba(59, 130, 246, 0.1); }
+
+/* Grid Styles */
+.modal-grid { 
+    flex: 1; 
+    padding: 20px; overflow-y: auto; display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Bigger items */
+    gap: 15px; align-content: start;
+}
+
+/* Item Card Styles */
+.modal-item { 
+    background: var(--slot-bg); padding: 15px; border-radius: 12px; 
+    text-align: center; cursor: pointer; border: 1px solid #222; 
+    position: relative; 
+    transition: 0.2s;
+}
+.modal-item:hover { border-color: #666; transform: translateY(-2px); background: #1a1a1a; }
+.modal-item img { width: 80px; height: 80px; object-fit: contain; }
+.modal-item-name { font-size: 13px; margin-top: 10px; color: #eee; font-weight: 600; }
+
+/* 3. Demand Badge (Top Right) */
+.modal-demand-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    color: #ccc;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
 
 /* Auth */
 #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
