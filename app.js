@@ -1,4 +1,5 @@
 import { initCalculator } from "./calculator.js";
+// Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -12,6 +13,7 @@ const firebaseConfig = {
   appId: "1:916267709880:web:87ffece735b256e4b68b4d"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -44,10 +46,14 @@ window.onload = async () => {
         const data = await res.json();
         allItemsData = data.items;
         
+        // Init Systems
+        initTheme(); // Theme first to prevent flash
         renderValuesPage();
         initCalculator();
         setupTradeListeners();
         setupValuesListeners();
+        
+        // LOAD ADS FROM FIREBASE
         loadTradeFeed();
     } catch(e) { console.error("Initialization Error:", e); }
 
@@ -59,7 +65,7 @@ window.onload = async () => {
     }
 };
 
-// --- AUTHENTICATION ---
+// --- AUTHENTICATION & AVATAR ---
 document.getElementById('generate-btn').addEventListener('click', async () => {
     const user = document.getElementById('roblox-username').value.trim();
     if(!user) return;
@@ -68,6 +74,7 @@ document.getElementById('generate-btn').addEventListener('click', async () => {
     document.getElementById('auth-error').textContent = ""; 
 
     try {
+        // 1. Search for user via reliable proxy
         const url = `https://users.roblox.com/v1/users/search?keyword=${user}&limit=10`;
         const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
         
@@ -76,10 +83,27 @@ document.getElementById('generate-btn').addEventListener('click', async () => {
         const data = await res.json();
         const target = data.data.find(u => u.name.toLowerCase() === user.toLowerCase());
         
-        if(!target) throw new Error(`User '${user}' not found.`);
+        if(!target) {
+            throw new Error(`User '${user}' not found.`);
+        }
 
         robloxId = target.id;
-        currentUser = { username: target.name, id: target.id };
+
+        // 2. Fetch Avatar (New Feature)
+        let avatarUrl = "items/Default.png";
+        try {
+            const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${robloxId}&size=48x48&format=Png&isCircular=true`;
+            const thumbRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(thumbUrl)}`);
+            if(thumbRes.ok) {
+                const thumbData = await thumbRes.json();
+                if(thumbData.data && thumbData.data[0] && thumbData.data[0].imageUrl) {
+                    avatarUrl = thumbData.data[0].imageUrl;
+                }
+            }
+        } catch(err) { console.warn("Failed to load avatar", err); }
+
+        // 3. Save State
+        currentUser = { username: target.name, id: target.id, avatar: avatarUrl };
         generatedCode = `FTF-${Math.floor(Math.random()*10000)}`;
         
         document.getElementById('verification-phrase').textContent = generatedCode;
@@ -124,7 +148,11 @@ async function enterApp() {
     document.getElementById('auth-overlay').style.display = 'none';
     document.getElementById('user-info').style.display = 'flex';
     document.getElementById('login-btn').style.display = 'none';
+    
+    // Set Header Data
     document.getElementById('header-username').textContent = currentUser.username;
+    document.getElementById('header-avatar').src = currentUser.avatar || "items/Default.png";
+    
     document.getElementById('ads-left-msg').style.display = 'block';
     checkAdLimit();
 }
@@ -265,7 +293,7 @@ async function submitAd() {
     }
 }
 
-// --- LOAD FROM FIREBASE (UPDATED WITH STABILITY ICONS) ---
+// --- LOAD FROM FIREBASE ---
 async function loadTradeFeed() {
     tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
     
@@ -285,7 +313,7 @@ async function loadTradeFeed() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
-            if (now - ad.timestamp > oneDay) return;
+            if (now - ad.timestamp > oneDay) return; // Expired
 
             const card = document.createElement('div');
             card.className = 'trade-card';
@@ -305,17 +333,13 @@ async function loadTradeFeed() {
                 }, 0);
             }
 
-            // HTML Generator for items (NOW WITH STABILITY ICONS)
             const renderSide = (items) => {
                 return `<div class="trade-grid-small">` + items.map(i => {
                     const d = allItemsData.find(x => x.name === i.name) || { value:0, demand:0, stability:'Stable' };
-                    
-                    // --- STABILITY ICON LOGIC ---
-                    let icon = '<i class="fas fa-minus status-flat" title="Stable"></i>'; // Default
-                    if(d.stability.includes("➕")) icon = '<i class="fas fa-arrow-up status-up" title="Rising"></i>';
-                    else if(d.stability.includes("➖")) icon = '<i class="fas fa-arrow-down status-down" title="Lowering"></i>';
-                    else if(d.stability.includes("Fluctuating")) icon = '<i class="fas fa-wave-square" style="color:#eab308;font-size:12px;" title="Fluctuating"></i>';
-                    // ----------------------------
+                    let icon = '<i class="fas fa-minus status-flat"></i>';
+                    if(d.stability.includes("➕")) icon = '<i class="fas fa-arrow-up status-up"></i>';
+                    else if(d.stability.includes("➖")) icon = '<i class="fas fa-arrow-down status-down"></i>';
+                    else if(d.stability.includes("Fluctuating")) icon = '<i class="fas fa-wave-square" style="color:#eab308;font-size:12px;"></i>';
 
                     return `
                     <div class="mini-slot">
@@ -379,6 +403,34 @@ function incrementAdCount() {
     data.count++;
     localStorage.setItem(`ad_limit_${robloxId}`, JSON.stringify(data));
     checkAdLimit();
+}
+
+// --- THEME TOGGLE LOGIC ---
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = themeToggleBtn.querySelector('i');
+
+themeToggleBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    setTheme(isLight ? 'dark' : 'light');
+});
+
+function setTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('ftf_theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('ftf_theme', 'dark');
+    }
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('ftf_theme') || 'dark';
+    setTheme(savedTheme);
 }
 
 // --- VALUES PAGE ---
