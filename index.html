@@ -155,7 +155,18 @@
                 </div>
                 <input type="text" id="modal-search" class="modal-search" placeholder="Search items...">
             </div>
-            <div id="modal-list" class="modal-grid"></div>
+            
+            <div class="modal-body-flex">
+                <div class="modal-sidebar">
+                    <button class="modal-filter-btn active" onclick="filterModal('all')">All</button>
+                    <button class="modal-filter-btn legendary" onclick="filterModal('Legendary')">Legendary</button>
+                    <button class="modal-filter-btn epic" onclick="filterModal('Epic')">Epic</button>
+                    <button class="modal-filter-btn rare" onclick="filterModal('Rare')">Rare</button>
+                    <button class="modal-filter-btn common" onclick="filterModal('Common')">Common</button>
+                </div>
+                
+                <div id="modal-list" class="modal-grid"></div>
+            </div>
         </div>
     </div>
 
@@ -214,7 +225,7 @@
         function openAuth() { document.getElementById('auth-overlay').style.display = 'flex'; }
         function closeAuth() { 
             document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('auth-error').textContent = ""; // Clear errors on close
+            document.getElementById('auth-error').textContent = ""; 
             document.getElementById('auth-loader').style.display = 'none';
         }
     </script>
