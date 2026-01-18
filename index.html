@@ -20,7 +20,6 @@
 <body>
 
     <div id="auth-overlay">
-        
         <div id="auth-loader" class="loader" style="display:none; margin-bottom: 20px;"></div>
         <p id="auth-error" style="color: #ef4444; margin-bottom: 15px; font-weight:bold; text-align: center;"></p>
 
@@ -54,11 +53,15 @@
         </div>
         
         <div class="header-right">
-            <a href="https://discord.gg/nh2mTzMwFx" target="_blank" class="icon-link discord-icon" title="Join Discord Server">
+            <a href="YOUR_DISCORD_INVITE_LINK" target="_blank" class="icon-link discord-icon" title="Join Discord">
                 <i class="fab fa-discord"></i>
             </a>
 
-            <button id="theme-toggle" class="icon-btn" title="Toggle Light/Dark Mode">
+            <button onclick="nav('guide')" class="icon-btn" title="User Guide">
+                <i class="fas fa-book"></i>
+            </button>
+
+            <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
                 <i class="fas fa-moon"></i>
             </button>
 
@@ -83,7 +86,6 @@
                     <i class="fas fa-plus"></i> Post Ad
                 </button>
             </div>
-            
             <div id="trade-feed"></div>
         </section>
 
@@ -152,6 +154,54 @@
                 </div>
             </div>
         </section>
+
+        <section id="guide" class="section">
+            <div class="guide-container">
+                <h1>How FTF Hub Works</h1>
+                
+                <div class="guide-grid">
+                    <div class="guide-card">
+                        <h3><i class="fas fa-chart-line"></i> Stability</h3>
+                        <p>Stability indicates if an item's value is changing. Look for the icon in the top-left of items.</p>
+                        <ul class="guide-list">
+                            <li><i class="fas fa-arrow-up status-up"></i> <strong>Rising:</strong> Value is going up.</li>
+                            <li><i class="fas fa-arrow-down status-down"></i> <strong>Dropping:</strong> Value is going down.</li>
+                            <li><i class="fas fa-wave-square" style="color:#eab308"></i> <strong>Fluctuating:</strong> Unstable/Risky.</li>
+                            <li><i class="fas fa-minus status-flat"></i> <strong>Stable:</strong> Consistent price.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-card">
+                        <h3><i class="fas fa-fire"></i> Demand</h3>
+                        <p>Located in the top-right corner of items (e.g., <strong>D: 8</strong>).</p>
+                        <ul class="guide-list">
+                            <li><strong>0 - 3:</strong> Low Demand (Hard to trade).</li>
+                            <li><strong>4 - 6:</strong> Average Demand.</li>
+                            <li><strong>7 - 10:</strong> High Demand (Easy to trade).</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-card">
+                        <h3><i class="fas fa-tags"></i> Value Types</h3>
+                        <p>We support two value systems. Toggle them in the settings or footer.</p>
+                        <ul class="guide-list">
+                            <li><strong>FV (Flee Value):</strong> The standard trading currency.</li>
+                            <li><strong>HV (Hammer Value):</strong> Raw value (approx. 40 FV = 1 HV).</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-card">
+                        <h3><i class="fas fa-exchange-alt"></i> Posting Ads</h3>
+                        <p>Logged-in users can post up to 4 trade ads per day.</p>
+                        <ul class="guide-list">
+                            <li><strong>Offer:</strong> Select up to 4 items you have.</li>
+                            <li><strong>Request:</strong> Select specific items you want, or choose "Upgrade", "Downgrade", or "Any".</li>
+                            <li><strong>Expiry:</strong> Ads auto-delete after 24 hours.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="modal" class="modal-overlay">
@@ -163,7 +213,6 @@
                 </div>
                 <input type="text" id="modal-search" class="modal-search" placeholder="Search items...">
             </div>
-            
             <div class="modal-body-flex">
                 <div class="modal-sidebar">
                     <button class="modal-filter-btn active" onclick="filterModal('all')">All</button>
@@ -172,7 +221,6 @@
                     <button class="modal-filter-btn rare" onclick="filterModal('Rare')">Rare</button>
                     <button class="modal-filter-btn common" onclick="filterModal('Common')">Common</button>
                 </div>
-                
                 <div id="modal-list" class="modal-grid"></div>
             </div>
         </div>
@@ -187,7 +235,6 @@
                 </div>
             </div>
             <div class="post-modal-body">
-                
                 <div class="post-section">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-weight:700;">Your Side (Max 4 Items)</span>
@@ -195,13 +242,11 @@
                     </div>
                     <div id="post-yours-grid" class="grid-2x2"></div>
                 </div>
-
                 <div class="post-section">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-weight:700;">What You Want</span>
                         <span id="post-theirs-total" class="draft-total" style="display:none;">Total: 0 fv</span>
                     </div>
-                    
                     <div class="tag-toggles">
                         <button class="tag-btn active" data-tag="specific">Specific Items</button>
                         <button class="tag-btn" data-tag="Upgrade">Upgrade</button>
@@ -212,7 +257,6 @@
                          <div id="post-theirs-grid" class="grid-2x2"></div>
                     </div>
                 </div>
-
                 <div class="post-section">
                     <span style="display:block;margin-bottom:10px;font-weight:700;">Discord Handle</span>
                     <input type="text" id="discord-input" class="discord-input" placeholder="e.g., username#1234">
@@ -226,9 +270,15 @@
     <script>
         function nav(sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Remove active from all nav links
             document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            
+            // Activate section
             document.getElementById(sectionId).classList.add('active');
-            document.getElementById('nav-' + sectionId).classList.add('active');
+            
+            // Only add active class if it's a main nav button (Guide doesn't have a top nav button)
+            const navBtn = document.getElementById('nav-' + sectionId);
+            if(navBtn) navBtn.classList.add('active');
         }
         function openAuth() { document.getElementById('auth-overlay').style.display = 'flex'; }
         function closeAuth() { 
