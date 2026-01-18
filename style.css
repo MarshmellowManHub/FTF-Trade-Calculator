@@ -18,13 +18,12 @@ body {
     margin: 0; min-height: 100vh; display: flex; flex-direction: column;
 }
 
-/* --- Header & Nav --- */
+/* --- HEADER & NAV --- */
 .site-header {
     background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color);
     padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
 }
 
-/* Logo Image Style */
 .site-logo {
     height: 40px; 
     width: auto;
@@ -53,7 +52,7 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .panel-label { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
 .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
 
-/* Grid Slot */
+/* Standard Slot (Calculator & Post Modal) */
 .slot { 
     aspect-ratio: 1/1; 
     background-color: var(--slot-bg); 
@@ -67,7 +66,7 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 }
 .slot:hover { border-color: #444; background-color: #1a1a1a; }
 
-/* Image Centering */
+/* Image Centering Logic */
 .slot-content { 
     width: 100%; height: 100%; 
     display: flex; 
@@ -110,20 +109,48 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 
 .trade-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
 .trade-card-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 14px; }
-.trade-card-body { display: flex; align-items: center; padding: 20px; gap: 20px; }
-.trade-side { flex: 1; }
-.trade-divider { font-size: 24px; color: var(--text-secondary); }
-.trade-grid-small { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.trade-card-body { display: flex; align-items: flex-start; padding: 20px; gap: 20px; }
+.trade-side { flex: 1; display: flex; flex-direction: column; gap: 10px; } 
+.trade-divider { font-size: 24px; color: var(--text-secondary); align-self: center; margin-top: 20px; }
+.trade-grid-small { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; justify-content: center; }
 
-/* Mini Card for Feed */
-.mini-slot { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; display: flex; flex-direction: column; align-items: center; position: relative; min-height: 90px; }
-.mini-slot img { width: 45px; height: 45px; object-fit: contain; margin-top: 12px; }
-.mini-slot .status-icon { position: absolute; top: 4px; left: 4px; font-size: 10px; }
-.mini-slot .demand-badge { position: absolute; top: 4px; right: 4px; font-size: 9px; padding: 1px 4px; }
-.mini-slot .value-badge { font-size: 10px; padding: 2px 6px; margin-top: 4px; width: 100%; }
+/* Headers & Totals */
+.side-header { text-align: center; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.side-total { text-align: center; font-size: 15px; font-weight: 800; color: var(--accent-blue); margin-top: 5px; }
+
+/* Mini Card for Trade Feed */
+.mini-slot { 
+    background: var(--bg-panel); 
+    border: 1px solid var(--border-color); 
+    border-radius: 8px; 
+    padding: 8px; 
+    display: flex; flex-direction: column; align-items: center; 
+    position: relative; 
+    min-height: 115px; /* Bigger size */
+}
+.mini-slot img { 
+    width: 65px; height: 65px; /* Bigger image */
+    object-fit: contain; 
+    margin-top: 15px; 
+}
+.mini-slot .status-icon { position: absolute; top: 5px; left: 5px; font-size: 12px; }
+.mini-slot .demand-badge { position: absolute; top: 5px; right: 5px; font-size: 10px; padding: 1px 5px; background: rgba(0,0,0,0.7); border-radius: 4px; }
+.mini-slot .value-badge { font-size: 11px; padding: 3px 8px; margin-top: auto; width: 100%; }
 .mini-slot .item-name { font-size: 9px; color: #ccc; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-.generic-tag { background: #222; color: #ccc; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; border: 1px dashed #444; }
+/* Centered Upgrade/Any Tags */
+.generic-tag { 
+    background: #151515; 
+    color: #ccc; 
+    border-radius: 8px; 
+    border: 1px dashed #444; 
+    margin-top: 5px; 
+    display: flex; justify-content: center; align-items: center; /* Centering */
+    min-height: 120px; 
+    height: 100%;
+    font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
+}
+
 .trade-card-footer { background: #111; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 14px; }
 
 /* --- VALUES PAGE --- */
@@ -141,6 +168,7 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 
 .values-grid { flex: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; align-content: start; background: var(--bg-main); }
 
+/* Value Page Card */
 .value-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative; transition: 0.2s; }
 .value-card:hover { border-color: #555; transform: translateY(-2px); }
 .status-icon { position: absolute; top: 8px; left: 8px; font-size: 14px; }
@@ -166,10 +194,8 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .submit-ad-btn { width: 100%; background: var(--accent-blue); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 18px; }
 .draft-total { font-size: 14px; font-weight: 700; color: var(--accent-green); margin-top: 5px; text-align: right; display: block; }
 
-/* --- NEW ITEM SELECT MODAL STYLES --- */
+/* Item Select Modal (Big Version) */
 #modal { z-index: 3000; } 
-
-/* 1. Make Modal Bigger */
 .modal-box { 
     background: var(--bg-panel); 
     width: 95%; max-width: 1200px; 
@@ -183,10 +209,10 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .modal-search { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; padding: 12px 15px; border-radius: 8px; color: white; font-size: 16px; outline: none; transition: 0.2s; }
 .modal-search:focus { border-color: #555; background: #151515; }
 
-/* 2. New Flex Layout */
+/* Modal Flex Body */
 .modal-body-flex { display: flex; flex: 1; overflow: hidden; }
 
-/* Sidebar Styles */
+/* Modal Sidebar */
 .modal-sidebar {
     width: 180px;
     background: var(--bg-panel);
@@ -205,7 +231,6 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .modal-filter-btn:hover { background: #1a1a1a; }
 .modal-filter-btn.active { background: #222; border-color: #333; color: white; }
 
-/* Sidebar Colors */
 .modal-filter-btn.legendary { color: #ffcc00; }
 .modal-filter-btn.epic { color: #a335ee; }
 .modal-filter-btn.rare { color: #3b82f6; }
@@ -214,15 +239,15 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .modal-filter-btn.active.epic { background: rgba(163, 53, 238, 0.1); }
 .modal-filter-btn.active.rare { background: rgba(59, 130, 246, 0.1); }
 
-/* Grid Styles */
+/* Modal Grid */
 .modal-grid { 
     flex: 1; 
     padding: 20px; overflow-y: auto; display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Bigger items */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
     gap: 15px; align-content: start;
 }
 
-/* Item Card Styles */
+/* Modal Item Cards */
 .modal-item { 
     background: var(--slot-bg); padding: 15px; border-radius: 12px; 
     text-align: center; cursor: pointer; border: 1px solid #222; 
@@ -233,48 +258,14 @@ main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .modal-item img { width: 80px; height: 80px; object-fit: contain; }
 .modal-item-name { font-size: 13px; margin-top: 10px; color: #eee; font-weight: 600; }
 
-/* 3. Demand Badge (Top Right) */
 .modal-demand-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.6);
-    color: #ccc;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.6); color: #ccc;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
 }
 
-/* --- TRADES FEED UPDATED --- */
-.trade-toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 30px; }
-.post-ad-btn { background: var(--accent-blue); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 16px; }
-.post-ad-btn:hover { background: #2563eb; }
-.post-ad-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
-
-.trade-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
-.trade-card-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 14px; }
-.trade-card-body { display: flex; align-items: flex-start; padding: 20px; gap: 20px; } /* Changed align-items to flex-start for better header alignment */
-.trade-side { flex: 1; display: flex; flex-direction: column; gap: 10px; } /* Added flex col for stacking header/grid/total */
-.trade-divider { font-size: 24px; color: var(--text-secondary); align-self: center; margin-top: 20px; } /* Centered divider */
-.trade-grid-small { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; justify-content: center; }
-
-/* New Headers & Totals */
-.side-header { text-align: center; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-.side-total { text-align: center; font-size: 15px; font-weight: 800; color: var(--accent-blue); margin-top: 5px; }
-
-/* Mini Card for Feed */
-.mini-slot { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; display: flex; flex-direction: column; align-items: center; position: relative; min-height: 90px; }
-.mini-slot img { width: 45px; height: 45px; object-fit: contain; margin-top: 12px; }
-.mini-slot .status-icon { position: absolute; top: 4px; left: 4px; font-size: 10px; }
-.mini-slot .demand-badge { position: absolute; top: 4px; right: 4px; font-size: 9px; padding: 1px 4px; }
-.mini-slot .value-badge { font-size: 10px; padding: 2px 6px; margin-top: 4px; width: 100%; }
-.mini-slot .item-name { font-size: 9px; color: #ccc; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-
-.generic-tag { background: #222; color: #ccc; padding: 20px 10px; border-radius: 8px; text-align: center; font-weight: 600; border: 1px dashed #444; margin-top: 5px; }
-.trade-card-footer { background: #111; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 14px; }
-
-/* Auth */
+/* Auth Overlay */
 #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .auth-box { background: var(--bg-panel); border: 1px solid #333; padding: 40px; border-radius: 12px; text-align: center; width: 400px; }
 .action-btn { background: white; color: black; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-size: 1rem; margin-top: 20px; font-weight: bold; }
