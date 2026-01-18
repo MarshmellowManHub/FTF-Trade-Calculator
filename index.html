@@ -10,6 +10,10 @@
 <body>
 
     <div id="auth-overlay">
+        
+        <div id="auth-loader" class="loader" style="display:none; margin-bottom: 20px;"></div>
+        <p id="auth-error" style="color: #ef4444; margin-bottom: 15px; font-weight:bold; text-align: center;"></p>
+
         <div class="auth-box" id="step-1">
             <h2>Welcome to FTF Hub</h2>
             <p>Enter your Roblox username to begin.</p>
@@ -18,18 +22,20 @@
             <button class="action-btn" id="generate-btn">Continue</button>
             <button onclick="closeAuth()" style="margin-top:10px; background:none; border:none; color:#666; cursor:pointer;">Cancel</button>
         </div>
+
         <div class="auth-box" id="step-2" style="display:none;">
             <h2>Verification</h2>
             <p>Please paste the following code into your <strong>Roblox About Me</strong> section:</p>
             <div class="phrase-box" id="verification-phrase">LOADING...</div>
+            <p style="font-size: 13px; color: #888; margin: 10px 0;">You can remove it after verification.</p>
             <button class="action-btn" id="verify-check-btn">I've Updated My Bio</button>
-            <p id="auth-error" style="color: #ef4444; margin-top: 15px; font-weight:bold;"></p>
+            <button onclick="closeAuth()" style="margin-top:15px; background:none; border:none; color:#666; cursor:pointer;">Cancel</button>
         </div>
     </div>
 
     <header class="site-header">
         <div style="display:flex; align-items:center; gap:10px;">
-            <img src="ftf-logo.png" alt="FTF HUB" class="site-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+            <img src="logo.png" alt="FTF HUB" class="site-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
             <div class="site-title" style="display:none;">FTF HUB</div> 
         </div>
         
@@ -59,6 +65,7 @@
                     <i class="fas fa-plus"></i> Post Ad
                 </button>
             </div>
+            
             <div id="trade-feed"></div>
         </section>
 
@@ -151,6 +158,7 @@
                 </div>
             </div>
             <div class="post-modal-body">
+                
                 <div class="post-section">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-weight:700;">Your Side (Max 4 Items)</span>
@@ -158,11 +166,13 @@
                     </div>
                     <div id="post-yours-grid" class="grid-2x2"></div>
                 </div>
+
                 <div class="post-section">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-weight:700;">What You Want</span>
                         <span id="post-theirs-total" class="draft-total" style="display:none;">Total: 0 fv</span>
                     </div>
+                    
                     <div class="tag-toggles">
                         <button class="tag-btn active" data-tag="specific">Specific Items</button>
                         <button class="tag-btn" data-tag="Upgrade">Upgrade</button>
@@ -173,6 +183,7 @@
                          <div id="post-theirs-grid" class="grid-2x2"></div>
                     </div>
                 </div>
+
                 <div class="post-section">
                     <span style="display:block;margin-bottom:10px;font-weight:700;">Discord Handle</span>
                     <input type="text" id="discord-input" class="discord-input" placeholder="e.g., username#1234">
@@ -191,7 +202,11 @@
             document.getElementById('nav-' + sectionId).classList.add('active');
         }
         function openAuth() { document.getElementById('auth-overlay').style.display = 'flex'; }
-        function closeAuth() { document.getElementById('auth-overlay').style.display = 'none'; }
+        function closeAuth() { 
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('auth-error').textContent = ""; // Clear errors on close
+            document.getElementById('auth-loader').style.display = 'none';
+        }
     </script>
 </body>
 </html>
