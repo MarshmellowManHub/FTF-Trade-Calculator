@@ -64,37 +64,74 @@ window.onload = async () => {
     }
 };
 
-// --- AUTHENTICATION ---
+// --- AUTHENTICATION (FIXED) ---
 document.getElementById('generate-btn').addEventListener('click', async () => {
     const user = document.getElementById('roblox-username').value.trim();
     if(!user) return;
+    
     document.getElementById('auth-loader').style.display = 'block';
+    document.getElementById('auth-error').textContent = ""; // Clear old errors
+
     try {
+        // 1. Search for user via reliable proxy
         const url = `https://users.roblox.com/v1/users/search?keyword=${user}&limit=10`;
         const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-        const json = await res.json();
-        const data = JSON.parse(json.contents);
+        
+        if (!res.ok) throw new Error(`Proxy Error: ${res.status}`);
+
+        // FIX: Direct JSON (No .contents wrapper)
+        const data = await res.json();
+        console.log("Roblox Search Data:", data);
+
+        // 2. Find exact match
         const target = data.data.find(u => u.name.toLowerCase() === user.toLowerCase());
-        if(!target) throw new Error("Not found");
+        
+        if(!target) {
+            throw new Error(`User '${user}' not found.`);
+        }
+
+        // 3. Success
         robloxId = target.id;
         currentUser = { username: target.name, id: target.id };
         generatedCode = `FTF-${Math.floor(Math.random()*10000)}`;
+        
         document.getElementById('verification-phrase').textContent = generatedCode;
         document.getElementById('step-1').style.display = 'none';
         document.getElementById('step-2').style.display = 'block';
-    } catch(e) { document.getElementById('auth-error').textContent = "User not found"; } finally { document.getElementById('auth-loader').style.display = 'none'; }
+
+    } catch(e) { 
+        console.error("Login Error:", e);
+        document.getElementById('auth-error').textContent = e.message || "Connection failed."; 
+    } finally { 
+        document.getElementById('auth-loader').style.display = 'none'; 
+    }
 });
 
 document.getElementById('verify-check-btn').addEventListener('click', async () => {
+    document.getElementById('auth-loader').style.display = 'block';
+    document.getElementById('auth-error').textContent = "";
+
     try {
         const url = `https://users.roblox.com/v1/users/${robloxId}`;
         const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-        const json = await res.json();
-        if(JSON.parse(json.contents).description.includes(generatedCode)) {
+        
+        if (!res.ok) throw new Error("Failed to fetch bio.");
+
+        const data = await res.json();
+        console.log("Bio Data:", data);
+
+        if(data.description && data.description.includes(generatedCode)) {
             localStorage.setItem('ftf_user', JSON.stringify(currentUser));
             enterApp();
-        } else { document.getElementById('auth-error').textContent = "Code not found."; }
-    } catch(e) {}
+        } else {
+            throw new Error("Code not found in 'About Me'. Please try again.");
+        }
+    } catch(e) { 
+        console.error("Verify Error:", e);
+        document.getElementById('auth-error').textContent = e.message; 
+    } finally {
+        document.getElementById('auth-loader').style.display = 'none';
+    }
 });
 
 async function enterApp() {
@@ -132,6 +169,7 @@ function setupTradeListeners() {
             resetTags();
             e.target.classList.add('active');
             draftAd.theirsType = e.target.dataset.tag;
+            
             const theirsTotal = document.getElementById('post-theirs-total');
             if(draftAd.theirsType === 'specific') {
                 postTheirsContainer.style.display = 'block';
@@ -214,7 +252,6 @@ async function submitAd() {
     if(draftAd.yours.length === 0) return alert("Add items to your side.");
     if(!discord) return alert("Discord handle required.");
 
-    // Disable button to prevent double-click
     const submitBtn = document.getElementById('submit-ad-btn');
     submitBtn.disabled = true;
     submitBtn.innerText = "Posting...";
@@ -222,7 +259,7 @@ async function submitAd() {
     const newAd = {
         username: currentUser.username,
         discord: discord,
-        timestamp: Date.now(), // Server readable time
+        timestamp: Date.now(),
         displayTime: new Date().toLocaleTimeString(),
         yours: draftAd.yours,
         theirs: draftAd.theirs,
@@ -230,18 +267,13 @@ async function submitAd() {
     };
 
     try {
-        // SAVE TO FIREBASE CLOUD
         await addDoc(collection(db, "trade_ads"), newAd);
-        
-        // Update Local Limits
         incrementAdCount();
-        
-        // Close & Reload
         postModal.style.display = 'none';
         loadTradeFeed();
     } catch (e) {
         console.error("Error posting ad: ", e);
-        alert("Failed to post ad. Check your connection.");
+        alert("Failed to post ad. Check connection.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "Post Trade Ad";
@@ -253,11 +285,10 @@ async function loadTradeFeed() {
     tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
     
     try {
-        // Query last 50 ads, newest first
         const q = query(collection(db, "trade_ads"), orderBy("timestamp", "desc"), limit(50));
         const querySnapshot = await getDocs(q);
         
-        tradeFeed.innerHTML = ""; // Clear loader
+        tradeFeed.innerHTML = "";
         
         if (querySnapshot.empty) {
             tradeFeed.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">No active trades. Post one!</div>';
@@ -269,11 +300,8 @@ async function loadTradeFeed() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
+            if (now - ad.timestamp > oneDay) return; // Expired
 
-            // 24 HOUR EXPIRATION CHECK
-            if (now - ad.timestamp > oneDay) return; // Skip old ads
-
-            // Render Ad Card
             const card = document.createElement('div');
             card.className = 'trade-card';
             
@@ -300,7 +328,7 @@ async function loadTradeFeed() {
                 ? renderSide(ad.theirs)
                 : `<div class="generic-tag">${ad.theirsType}</div>`;
 
-            let timeStr = ad.displayTime || "Unknown time";
+            let timeStr = ad.displayTime || new Date(ad.timestamp).toLocaleTimeString();
 
             card.innerHTML = `
                 <div class="trade-card-header"><span>Trading</span><span>${timeStr}</span></div>
@@ -320,7 +348,6 @@ async function loadTradeFeed() {
     }
 }
 
-// --- LIMITER ---
 function checkAdLimit() {
     if (!currentUser) return false;
     const today = new Date().toDateString();
