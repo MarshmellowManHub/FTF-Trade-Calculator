@@ -1,4 +1,5 @@
 :root {
+    /* DARK MODE (DEFAULT) */
     --bg-main: #050505;
     --bg-panel: #0a0a0a;
     --border-color: #222;
@@ -10,29 +11,82 @@
     --accent-red: #ef4444;
 }
 
+/* LIGHT MODE VARIABLES */
+:root[data-theme="light"] {
+    --bg-main: #f0f2f5;
+    --bg-panel: #ffffff;
+    --border-color: #ddd;
+    --slot-bg: #f8f9fa;
+    --text-primary: #1c1e21;
+    --text-secondary: #65676b;
+    /* Accents can stay similar or be adjusted for light mode contrast */
+}
+
 * { box-sizing: border-box; }
 
 body {
     background-color: var(--bg-main); color: var(--text-primary);
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+    transition: background-color 0.3s, color 0.3s; /* Smooth theme transition */
 }
 
-/* --- HEADER & NAV --- */
+/* --- UPDATED HEADER & NAV --- */
 .site-header {
-    background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color);
-    padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+    background-color: var(--bg-panel); 
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 30px; 
+    display: flex; 
+    justify-content: space-between; /* Separates left and right sections */
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
-.site-logo {
-    height: 40px; 
-    width: auto;
-    display: block;
+/* New container for Logo + Nav */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Space between logo and nav buttons */
 }
+
+.site-logo { height: 40px; width: auto; display: block; }
 
 .nav-links { display: flex; gap: 20px; }
 .nav-link { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 15px; transition: 0.2s; }
 .nav-link.active, .nav-link:hover { color: var(--text-primary); font-weight: 700; }
+
+/* New container for right-side controls */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Icons (Discord & Theme) */
+.icon-link, .icon-btn {
+    background: none; border: none; color: var(--text-secondary);
+    font-size: 20px; cursor: pointer; padding: 5px; display: flex; align-items: center; transition: 0.2s;
+    text-decoration: none;
+}
+.icon-link:hover, .icon-btn:hover { color: var(--text-primary); transform: scale(1.1); }
+.discord-icon:hover { color: #5865F2; /* Discord Brand Color */ }
+
+/* User Avatar */
+.user-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--border-color); object-fit: cover;
+}
+
+/* User Info Container */
+#user-info { display: flex; align-items: center; gap: 10px; }
+#header-username { font-size: 14px; font-weight: bold; }
+
+/* Buttons */
+.logout-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+.logout-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.login-btn { background: var(--accent-green); border: none; color: black; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.login-btn:hover { opacity: 0.9; }
+/* --------------------------- */
 
 main { max-width: 1200px; margin: 40px auto; width: 95%; }
 .section { display: none; }
