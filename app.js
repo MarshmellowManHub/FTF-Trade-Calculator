@@ -1,5 +1,4 @@
 import { initCalculator } from "./calculator.js";
-// Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -13,7 +12,6 @@ const firebaseConfig = {
   appId: "1:916267709880:web:87ffece735b256e4b68b4d"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -46,13 +44,10 @@ window.onload = async () => {
         const data = await res.json();
         allItemsData = data.items;
         
-        // Init Systems
         renderValuesPage();
         initCalculator();
         setupTradeListeners();
         setupValuesListeners();
-        
-        // LOAD ADS FROM FIREBASE
         loadTradeFeed();
     } catch(e) { console.error("Initialization Error:", e); }
 
@@ -64,33 +59,25 @@ window.onload = async () => {
     }
 };
 
-// --- AUTHENTICATION (FIXED) ---
+// --- AUTHENTICATION ---
 document.getElementById('generate-btn').addEventListener('click', async () => {
     const user = document.getElementById('roblox-username').value.trim();
     if(!user) return;
     
     document.getElementById('auth-loader').style.display = 'block';
-    document.getElementById('auth-error').textContent = ""; // Clear old errors
+    document.getElementById('auth-error').textContent = ""; 
 
     try {
-        // 1. Search for user via reliable proxy
         const url = `https://users.roblox.com/v1/users/search?keyword=${user}&limit=10`;
         const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
         
         if (!res.ok) throw new Error(`Proxy Error: ${res.status}`);
 
-        // FIX: Direct JSON (No .contents wrapper)
         const data = await res.json();
-        console.log("Roblox Search Data:", data);
-
-        // 2. Find exact match
         const target = data.data.find(u => u.name.toLowerCase() === user.toLowerCase());
         
-        if(!target) {
-            throw new Error(`User '${user}' not found.`);
-        }
+        if(!target) throw new Error(`User '${user}' not found.`);
 
-        // 3. Success
         robloxId = target.id;
         currentUser = { username: target.name, id: target.id };
         generatedCode = `FTF-${Math.floor(Math.random()*10000)}`;
@@ -118,7 +105,6 @@ document.getElementById('verify-check-btn').addEventListener('click', async () =
         if (!res.ok) throw new Error("Failed to fetch bio.");
 
         const data = await res.json();
-        console.log("Bio Data:", data);
 
         if(data.description && data.description.includes(generatedCode)) {
             localStorage.setItem('ftf_user', JSON.stringify(currentUser));
@@ -139,7 +125,6 @@ async function enterApp() {
     document.getElementById('user-info').style.display = 'flex';
     document.getElementById('login-btn').style.display = 'none';
     document.getElementById('header-username').textContent = currentUser.username;
-    
     document.getElementById('ads-left-msg').style.display = 'block';
     checkAdLimit();
 }
@@ -280,7 +265,7 @@ async function submitAd() {
     }
 }
 
-// --- LOAD FROM FIREBASE ---
+// --- LOAD FROM FIREBASE (UPDATED LAYOUT) ---
 async function loadTradeFeed() {
     tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
     
@@ -300,11 +285,27 @@ async function loadTradeFeed() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
-            if (now - ad.timestamp > oneDay) return; // Expired
+            if (now - ad.timestamp > oneDay) return;
 
             const card = document.createElement('div');
             card.className = 'trade-card';
             
+            // Calculate Yours Total
+            const yoursTotal = ad.yours.reduce((acc, i) => {
+                const d = allItemsData.find(x => x.name === i.name);
+                return acc + (d ? d.value : 0);
+            }, 0);
+
+            // Calculate Theirs Total
+            let theirsTotal = 0;
+            if (ad.theirsType === 'specific') {
+                theirsTotal = ad.theirs.reduce((acc, i) => {
+                    const d = allItemsData.find(x => x.name === i.name);
+                    return acc + (d ? d.value : 0);
+                }, 0);
+            }
+
+            // HTML Generator for items
             const renderSide = (items) => {
                 return `<div class="trade-grid-small">` + items.map(i => {
                     const d = allItemsData.find(x => x.name === i.name) || { value:0, demand:0, stability:'Stable' };
@@ -330,12 +331,21 @@ async function loadTradeFeed() {
 
             let timeStr = ad.displayTime || new Date(ad.timestamp).toLocaleTimeString();
 
+            // Updated Card Layout
             card.innerHTML = `
                 <div class="trade-card-header"><span>Trading</span><span>${timeStr}</span></div>
                 <div class="trade-card-body">
-                    <div class="trade-side">${yoursHtml}</div>
+                    <div class="trade-side">
+                        <div class="side-header">Offering</div>
+                        ${yoursHtml}
+                        <div class="side-total">Value: ${yoursTotal.toLocaleString()}</div>
+                    </div>
                     <div class="trade-divider"><i class="fas fa-exchange-alt"></i></div>
-                    <div class="trade-side">${theirsHtml}</div>
+                    <div class="trade-side">
+                        <div class="side-header">Requesting</div>
+                        ${theirsHtml}
+                        <div class="side-total">${ad.theirsType === 'specific' ? 'Value: ' + theirsTotal.toLocaleString() : ''}</div>
+                    </div>
                 </div>
                 <div class="trade-card-footer"><i class="fab fa-discord"></i> ${ad.discord} | ${ad.username}</div>
             `;
