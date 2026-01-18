@@ -1,0 +1,1 @@
+# FTF-Trade-Calculator
