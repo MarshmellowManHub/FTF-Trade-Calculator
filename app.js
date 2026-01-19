@@ -293,7 +293,7 @@ async function submitAd() {
     }
 }
 
-// --- LOAD FROM FIREBASE ---
+// --- LOAD FROM FIREBASE (UPDATED LAYOUT: VALUE AT TOP) ---
 async function loadTradeFeed() {
     tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
     
@@ -313,7 +313,7 @@ async function loadTradeFeed() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
-            if (now - ad.timestamp > oneDay) return; // Expired
+            if (now - ad.timestamp > oneDay) return;
 
             const card = document.createElement('div');
             card.className = 'trade-card';
@@ -359,19 +359,20 @@ async function loadTradeFeed() {
 
             let timeStr = ad.displayTime || new Date(ad.timestamp).toLocaleTimeString();
 
+            // MOVED 'side-total' TO TOP UNDER HEADER
             card.innerHTML = `
                 <div class="trade-card-header"><span>Trading</span><span>${timeStr}</span></div>
                 <div class="trade-card-body">
                     <div class="trade-side">
                         <div class="side-header">Offering</div>
-                        ${yoursHtml}
                         <div class="side-total">Value: ${yoursTotal.toLocaleString()}</div>
+                        ${yoursHtml}
                     </div>
                     <div class="trade-divider"><i class="fas fa-exchange-alt"></i></div>
                     <div class="trade-side">
                         <div class="side-header">Requesting</div>
-                        ${theirsHtml}
                         <div class="side-total">${ad.theirsType === 'specific' ? 'Value: ' + theirsTotal.toLocaleString() : ''}</div>
+                        ${theirsHtml}
                     </div>
                 </div>
                 <div class="trade-card-footer"><i class="fab fa-discord"></i> ${ad.discord} | ${ad.username}</div>
