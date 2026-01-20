@@ -89,7 +89,7 @@ document.getElementById('generate-btn').addEventListener('click', async () => {
 
         robloxId = target.id;
 
-        // 2. Fetch Avatar (New Feature)
+        // 2. Fetch Avatar
         let avatarUrl = "items/Default.png";
         try {
             const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${robloxId}&size=48x48&format=Png&isCircular=true`;
@@ -293,9 +293,9 @@ async function submitAd() {
     }
 }
 
-// --- LOAD FROM FIREBASE (UPDATED LAYOUT: VALUE AT TOP) ---
+// --- LOAD FROM FIREBASE ---
 async function loadTradeFeed() {
-    tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading trades...</div>';
+    tradeFeed.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary);">Loading trades...</div>';
     
     try {
         const q = query(collection(db, "trade_ads"), orderBy("timestamp", "desc"), limit(50));
@@ -304,7 +304,7 @@ async function loadTradeFeed() {
         tradeFeed.innerHTML = "";
         
         if (querySnapshot.empty) {
-            tradeFeed.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">No active trades. Post one!</div>';
+            tradeFeed.innerHTML = '<div style="color:var(--text-secondary);text-align:center;padding:20px;">No active trades. Post one!</div>';
             return;
         }
 
@@ -313,7 +313,7 @@ async function loadTradeFeed() {
 
         querySnapshot.forEach((doc) => {
             const ad = doc.data();
-            if (now - ad.timestamp > oneDay) return;
+            if (now - ad.timestamp > oneDay) return; // Expired
 
             const card = document.createElement('div');
             card.className = 'trade-card';
@@ -359,7 +359,7 @@ async function loadTradeFeed() {
 
             let timeStr = ad.displayTime || new Date(ad.timestamp).toLocaleTimeString();
 
-            // MOVED 'side-total' TO TOP UNDER HEADER
+            // RENDER CARD
             card.innerHTML = `
                 <div class="trade-card-header"><span>Trading</span><span>${timeStr}</span></div>
                 <div class="trade-card-body">
@@ -494,7 +494,7 @@ function renderValuesPage() {
             <div class="status-icon">${statusIcon}</div>
             <div class="demand-badge">D: ${item.demand}</div>
             <img src="items/${item.name}.png" onerror="this.src='items/Default.png'" style="width:70px; height:70px; object-fit:contain; margin-top:15px;">
-            <div style="font-size:12px;margin-top:10px;color:#eee;font-weight:600;text-align:center;">${item.name}</div>
+            <div style="font-size:12px;margin-top:10px;color:var(--text-primary);font-weight:600;text-align:center;">${item.name}</div>
             <div class="value-badge">${displayVal}</div>
         `;
         valuesList.appendChild(div);
